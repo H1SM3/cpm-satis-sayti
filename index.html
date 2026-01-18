@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<title>Car Parking Multiplayer | Shop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+  --neon:#00ffd5;
+  --pink:#ff2fd5;
+  --bg:#0b0b12;
+}
+
+body {
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:radial-gradient(circle at top, #111 0%, #05050a 70%);
+  color:#fff;
+}
+
+h1 {
+  text-align:center;
+  color:var(--neon);
+  text-shadow:0 0 15px var(--neon);
+}
+
+.section {
+  margin:30px auto;
+  max-width:900px;
+}
+
+.section h2 {
+  color:var(--pink);
+  text-shadow:0 0 10px var(--pink);
+  border-bottom:1px solid #333;
+  padding-bottom:5px;
+}
+
+.card {
+  background:linear-gradient(145deg,#12121a,#0a0a10);
+  box-shadow:0 0 15px rgba(0,255,213,.15);
+  border-radius:14px;
+  padding:15px;
+  margin:12px 0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.price {
+  color:var(--neon);
+  font-weight:bold;
+}
+
+button {
+  background:linear-gradient(90deg,var(--neon),var(--pink));
+  border:none;
+  padding:10px 16px;
+  color:#000;
+  font-weight:bold;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+button:hover {
+  box-shadow:0 0 20px var(--neon);
+}
+
+footer {
+  text-align:center;
+  margin:40px 0;
+  color:#aaa;
+}
+
+#adminBtn {
+  position:fixed;
+  right:15px;
+  bottom:15px;
+  background:#111;
+  color:var(--neon);
+  border:1px solid var(--neon);
+  padding:10px 14px;
+  border-radius:50%;
+  font-size:18px;
+}
+
+#adminPanel {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.9);
+  padding:20px;
+  overflow:auto;
+}
+
+#adminPanel h2 {
+  color:var(--neon);
+}
+
+.admin-item {
+  display:flex;
+  gap:10px;
+  margin:10px 0;
+}
+.admin-item input {
+  flex:1;
+  padding:8px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Car Parking Multiplayer</h1>
+<p style="text-align:center;">Neon Gamer Shop 🚗⚡</p>
+
+<div id="shop"></div>
+
+<footer>
+WhatsApp 📲 +994 55 456 05 95
+</footer>
+
+<button id="adminBtn" onclick="openAdmin()">⚙️</button>
+
+<div id="adminPanel">
+  <h2>Admin Panel</h2>
+  <div id="adminList"></div>
+  <button onclick="closeAdmin()">Bağla</button>
+</div>
+
+<script>
+const phone = "994554560595";
+
+let products = JSON.parse(localStorage.getItem("products")) || [
+  {name:"50M Pul", price:"1 AZN"},
+  {name:"30K Coin", price:"1 AZN"},
+  {name:"500K Coin", price:"2 AZN"},
+  {name:"ID Dəyişmə", price:"2 AZN"},
+  {name:"Boş Hesab", price:"1 AZN"},
+  {name:"Full Hesab (W16 yoxdur)", price:"8 AZN"},
+  {name:"Xrom", price:"1 AZN"},
+  {name:"Unikal HP", price:"1 AZN"},
+  {name:"Diskləri Açmaq", price:"1 AZN"},
+  {name:"Miqalka", price:"1 AZN"},
+  {name:"Crown", price:"1 AZN"},
+  {name:"İstənilən Maşın", price:"1 AZN"},
+  {name:"Hesabı Full Etmək", price:"4 AZN"},
+  {name:"W16 qoşmaq", price:"1 MAN"}
+];
+
+function renderShop() {
+  let html = `<div class="section"><h2>🛒 Məhsullar</h2>`;
+  products.forEach((p,i)=>{
+    html+=`
+    <div class="card">
+      <div>${p.name} <span class="price">(${p.price})</span></div>
+      <button onclick="order('${p.name}','${p.price}')">Sifariş et</button>
+    </div>`;
+  });
+  html+=`</div>`;
+  document.getElementById("shop").innerHTML = html;
+}
+
+function order(name,price){
+  let text = `Salam, ${name} (${price}) sifariş etmək istəyirəm.`;
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`);
+}
+
+function openAdmin(){
+  let pass = prompt("Admin şifrəsi:");
+  if(pass !== "admin123") return alert("Yanlış şifrə");
+  document.getElementById("adminPanel").style.display="block";
+  renderAdmin();
+}
+
+function closeAdmin(){
+  document.getElementById("adminPanel").style.display="none";
+}
+
+function renderAdmin(){
+  let html="";
+  products.forEach((p,i)=>{
+    html+=`
+    <div class="admin-item">
+      <input value="${p.name}" onchange="products[${i}].name=this.value">
+      <input value="${p.price}" onchange="products[${i}].price=this.value">
+    </div>`;
+  });
+  html+=`<button onclick="saveAdmin()">Yadda saxla</button>`;
+  document.getElementById("adminList").innerHTML=html;
+}
+
+function saveAdmin(){
+  localStorage.setItem("products",JSON.stringify(products));
+  renderShop();
+  alert("Qiymətlər yeniləndi");
+}
+
+renderShop();
+</script>
+
+</body>
+</html>
